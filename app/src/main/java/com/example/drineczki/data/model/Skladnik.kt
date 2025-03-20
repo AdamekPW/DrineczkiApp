@@ -16,16 +16,15 @@ import androidx.room.Query
         ForeignKey(
             entity = Koktajl::class,
             parentColumns = ["id"],
-            childColumns = ["id_koktajlu"],
-            onDelete = ForeignKey.CASCADE
+            childColumns = ["id_koktajlu"]
         )
     ],
     indices = [Index(value = ["id_koktajlu"])]
 )
 data class Skladnik(
-    @PrimaryKey(autoGenerate = true) val id_skladnika: Int = 0,
-    @ColumnInfo(name = "id_koktajlu") val idKoktajlu: Int,
-    @ColumnInfo(name = "nazwa_skladnika") val nazwaSkladnika: String
+    @PrimaryKey(autoGenerate = true) val id_skladnika: Int? = 0,
+    @ColumnInfo(name = "id_koktajlu") val idKoktajlu: Int?,
+    @ColumnInfo(name = "nazwa_skladnika") val nazwaSkladnika: String?
 )
 
 @Dao
