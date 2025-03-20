@@ -1,22 +1,12 @@
 package com.example.drineczki.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +18,7 @@ import com.example.drineczki.data.model.Koktajl
 import com.example.drineczki.data.model.Skladnik
 
 @Composable
-fun DrinkScreen(navController: NavController, id: Int, database: MyDatabase){
+fun DrinkScreen(navController: NavController, id: Int, database: MyDatabase) {
 
     val viewModel = remember { DrinkViewModel(database) }
 
@@ -39,19 +29,42 @@ fun DrinkScreen(navController: NavController, id: Int, database: MyDatabase){
         viewModel.load(id)
     }
 
-    Spacer(modifier = Modifier.height(20.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFa66730))
+            .padding(16.dp)
+    ) {
+        Button(
+            onClick = { navController.navigate("DrinkListScreen") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Powrót do listy")
+        }
 
-    if (koktajl == null){
-        Text("Error")
-    } else {
-        Column (
+        Spacer(modifier = Modifier.height(20.dp))
 
+        if (koktajl == null) {
+            Text("Error", color = Color.Red, fontSize = 20.sp)
+        } else {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                elevation = CardDefaults.cardElevation(4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFfab170),
+                    contentColor = Color.Black
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(koktajl!!.nazwa ?: "Brak nazwy", style = MaterialTheme.typography.headlineLarge)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(koktajl!!.przepis ?: "Brak przepisu", style = MaterialTheme.typography.bodyMedium)
+                }
+            }
 
-        ){
-
-            Text(koktajl!!.nazwa?:"")
             Spacer(modifier = Modifier.height(20.dp))
-            Text(koktajl!!.przepis?:"")
 
             if (skladniki.isEmpty()) {
                 Text(text = "Brak składników", fontSize = 18.sp, color = Color.Gray)
@@ -62,10 +75,8 @@ fun DrinkScreen(navController: NavController, id: Int, database: MyDatabase){
                     }
                 }
             }
-
         }
     }
-
 }
 
 @Composable
@@ -75,7 +86,11 @@ fun SkladnikItem(skladnik: Skladnik) {
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFfab170),
+            contentColor = Color.Black
+        )
     ) {
         Row(
             modifier = Modifier
