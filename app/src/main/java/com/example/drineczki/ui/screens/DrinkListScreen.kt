@@ -24,12 +24,13 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 //import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.drineczki.data.MyDatabase
 import com.example.drineczki.data.model.Koktajl
 
 @Composable
-fun DrinkListScreen(database: MyDatabase) {
+fun DrinkListScreen(navController: NavController, database: MyDatabase) {
 
     val viewModel = remember { DrinkListViewModel(database) }
 
@@ -47,19 +48,24 @@ fun DrinkListScreen(database: MyDatabase) {
         Spacer(modifier = Modifier.height(30.dp))
         LazyColumn {
             items(koktajle) { koktajl ->
-                KoktajlItem(koktajl = koktajl)
+                KoktajlItem(navController, koktajl = koktajl)
             }
         }
     }
 }
 
 @Composable
-fun KoktajlItem(koktajl: Koktajl) {
+fun KoktajlItem(navController: NavController, koktajl: Koktajl) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
+
+        onClick = {
+            val id = koktajl.id
+            navController.navigate("Drink/$id") },
+
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFfab170),
             contentColor = Color.Black

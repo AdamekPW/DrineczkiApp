@@ -7,6 +7,7 @@ data class Koktajl(
     @PrimaryKey(autoGenerate = true) val id: Int? = 1,
     @ColumnInfo(name = "nazwa") val nazwa: String?,
     @ColumnInfo(name = "przepis") val przepis: String?
+
 )
 
 @Dao
