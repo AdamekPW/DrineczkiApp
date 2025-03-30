@@ -42,6 +42,10 @@ android {
 
 dependencies {
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material3.window.size.class1.android)
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    implementation(libs.androidx.media3.common.ktx)
 //    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 //    implementation(libs.androidx.lifecycle.extensions)
 //    implementation(libs.mediation.test.suite)

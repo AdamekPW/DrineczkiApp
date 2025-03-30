@@ -1,8 +1,10 @@
 package com.example.drineczki.ui.screens
 
+import androidx.collection.emptyLongSet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,7 +32,7 @@ import com.example.drineczki.data.MyDatabase
 import com.example.drineczki.data.model.Koktajl
 
 @Composable
-fun DrinkListScreen(navController: NavController, database: MyDatabase) {
+fun DrinkListScreen(navController: NavController? = null, database: MyDatabase, onDrinkSelected: ((Int) -> Unit)? = null) {
 
     val viewModel = remember { DrinkListViewModel(database) }
 
@@ -41,30 +43,58 @@ fun DrinkListScreen(navController: NavController, database: MyDatabase) {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFa66730))
+        modifier = if (navController == null)
+        {
+            Modifier
+                .fillMaxWidth(0.33F)
+                .background(Color(0xFFa66730))
+        }
+        else
+        {
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFFa66730))
+        }
+
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         LazyColumn {
             items(koktajle) { koktajl ->
-                KoktajlItem(navController, koktajl = koktajl)
+                KoktajlItem(navController, koktajl = koktajl, onDrinkSelected)
             }
         }
     }
 }
 
 @Composable
-fun KoktajlItem(navController: NavController, koktajl: Koktajl) {
+fun KoktajlItem(navController: NavController?, koktajl: Koktajl, onDrinkSelected: ((Int) -> Unit)? = null) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = if (navController == null)
+        {
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        }
+        else
+        {
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        },
         elevation = CardDefaults.cardElevation(4.dp),
 
         onClick = {
             val id = koktajl.id
-            navController.navigate("Drink/$id") },
+            onDrinkSelected?.invoke(id!!)
+            if( navController == null)
+            {
+
+            }
+            else
+            {
+                navController.navigate("Drink/$id")
+            }
+        },
 
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFfab170),

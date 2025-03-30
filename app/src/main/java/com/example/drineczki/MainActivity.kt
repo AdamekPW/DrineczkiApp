@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -25,7 +28,13 @@ import com.example.drineczki.data.MyDatabase
 import com.example.drineczki.ui.screens.DrinkListScreen
 import com.example.drineczki.ui.screens.DrinkScreen
 import com.example.drineczki.ui.theme.DrineczkiTheme
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.media3.common.util.Log
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +43,13 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
+            val windowSizeClass = calculateWindowSizeClass(this)
             DrineczkiTheme {
-                AppNavigation(database)
+                if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded) {
+                    TabletLayout(database)
+                } else {
+                    AppNavigation(database)
+                }
             }
         }
     }
@@ -57,3 +71,38 @@ fun AppNavigation( database: MyDatabase ){
     }
 
 }
+
+
+@Composable
+fun TabletLayout(database: MyDatabase) {
+    var selectedDrinkId by remember { mutableStateOf<Int?>(null) }
+
+    Row(modifier = Modifier.fillMaxSize()) {
+        DrinkListScreen(
+            navController = null,
+            database = database,
+            onDrinkSelected = { id ->
+                selectedDrinkId = id
+            }
+        )
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(Color(0xFFFDE8D7))
+        ) {
+            selectedDrinkId?.let { id ->
+                key(id)
+                {
+                    DrinkScreen(navController = null, id = id, database = database)
+                }
+
+            } ?: Text(
+                "Wybierz drinka z listy",
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
+}
+

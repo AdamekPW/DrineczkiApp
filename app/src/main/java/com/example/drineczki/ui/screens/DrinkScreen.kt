@@ -18,7 +18,7 @@ import com.example.drineczki.data.model.Koktajl
 import com.example.drineczki.data.model.Skladnik
 
 @Composable
-fun DrinkScreen(navController: NavController, id: Int, database: MyDatabase) {
+fun DrinkScreen(navController: NavController?, id: Int, database: MyDatabase) {
 
     val viewModel = remember { DrinkViewModel(database) }
 
@@ -35,17 +35,21 @@ fun DrinkScreen(navController: NavController, id: Int, database: MyDatabase) {
             .background(Color(0xFFa66730))
             .padding(16.dp)
     ) {
-        Button(
-            onClick = { navController.navigate("DrinkListScreen") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Powrót do listy")
+        if(navController != null)
+        {
+            Button(
+                onClick = { navController.navigate("DrinkListScreen") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Powrót do listy")
+            }
         }
+
 
         Spacer(modifier = Modifier.height(20.dp))
 
         if (koktajl == null) {
-            Text("Error", color = Color.Red, fontSize = 20.sp)
+            Text("", color = Color.Red, fontSize = 20.sp)
         } else {
             Card(
                 modifier = Modifier
