@@ -1,5 +1,6 @@
 package com.example.drineczki.ui.screens
 
+import com.example.drineczki.ui.components.TimerScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,7 +45,11 @@ fun DrinkScreen(navController: NavController?, id: Int, database: MyDatabase) {
                 Text("Powrót do listy")
             }
         }
+        Spacer(modifier = Modifier.height(20.dp))
 
+        TimerScreen(key = id)
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Spacer(modifier = Modifier.height(20.dp))
 
