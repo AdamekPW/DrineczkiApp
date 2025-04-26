@@ -46,9 +46,6 @@ dependencies {
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
     implementation(libs.androidx.media3.common.ktx)
-//    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-//    implementation(libs.androidx.lifecycle.extensions)
-//    implementation(libs.mediation.test.suite)
     val roomVersion = "2.6.1"
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -57,14 +54,14 @@ dependencies {
     kapt("androidx.room:room-compiler:$roomVersion")
 
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
+    implementation(platform("androidx.compose:compose-bom:2023.09.01")) // BOM dla Compose
+    implementation("androidx.compose.ui:ui:1.5.0") // Podstawowe funkcje Compose
+    implementation("androidx.compose.ui:ui-graphics:1.5.0") // Funkcje graficzne
+    implementation("androidx.compose.ui:ui-tooling:1.5.0") // Narzędzia Compose
+    implementation("androidx.compose.animation:animation:1.5.0") // Animacje (opcjonalne)
     implementation(libs.androidx.material3)
     implementation("androidx.navigation:navigation-compose:2.7.5")
-    //implementation(libs.androidx.navigation.compose)
-    //implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
