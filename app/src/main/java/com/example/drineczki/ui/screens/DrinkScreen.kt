@@ -103,8 +103,8 @@ fun DrinkScreen(navController: NavController?, id: Int, database: MyDatabase) {
                         append("- ${it.nazwaSkladnika ?: "Nieznany składnik"}\n")
                     }
                 }
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("sms:")
+                val uri = Uri.parse("smsto:") // zamiast sms:, używamy smsto:
+                val intent = Intent(Intent.ACTION_SENDTO, uri).apply {
                     putExtra("sms_body", message)
                 }
                 context.startActivity(intent)
@@ -117,6 +117,7 @@ fun DrinkScreen(navController: NavController?, id: Int, database: MyDatabase) {
         ) {
             Icon(Icons.Default.Send, contentDescription = "Wyślij SMS")
         }
+
     }
 }
 
