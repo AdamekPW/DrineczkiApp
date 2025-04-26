@@ -11,13 +11,31 @@ import kotlinx.coroutines.launch
 class DrinkListViewModel(
     private val database: MyDatabase
 ) : ViewModel() {
-    private val _koktajle = MutableStateFlow<List<Koktajl>>(emptyList())
-    val koktajle = _koktajle.asStateFlow()
+
+    private val _easyDrinks = MutableStateFlow<List<Koktajl>>(emptyList())
+    val easyDrinks = _easyDrinks.asStateFlow()
+
+    private val _hardDrinks = MutableStateFlow<List<Koktajl>>(emptyList())
+    val hardDrinks = _hardDrinks.asStateFlow()
 
     fun loadKoktajle() {
         viewModelScope.launch {
-            val result = database.koktajlDao().getAllKoktajle()
-            _koktajle.value = result
+            val allKoktajle = database.koktajlDao().getAllKoktajle()
+
+            val easy = mutableListOf<Koktajl>()
+            val hard = mutableListOf<Koktajl>()
+
+            for (koktajl in allKoktajle) {
+                val skladniki = database.skladnikDao().getSkladnikiByKoktajlId(koktajl.id!!)
+                if (skladniki.size < 4) {
+                    easy.add(koktajl)
+                } else {
+                    hard.add(koktajl)
+                }
+            }
+
+            _easyDrinks.value = easy
+            _hardDrinks.value = hard
         }
     }
 }
