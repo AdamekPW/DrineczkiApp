@@ -124,7 +124,7 @@ fun KoktajlItem(navController: NavController?, koktajl: Koktajl, onDrinkSelected
                 text = koktajl.nazwa?:"",
                 style = MaterialTheme.typography.headlineMedium
             )
-            RandomDrinkIcon()
+            RandomDrinkIcon(koktajl.id?:0)
         }
     }
 }

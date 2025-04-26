@@ -11,10 +11,10 @@ import com.example.drineczki.R
 import kotlin.random.Random
 
 @Composable
-fun RandomDrinkIcon(modifier: Modifier = Modifier) {
-    val randomNumber = Random.nextInt(1, 5)
+fun RandomDrinkIcon(iconId: Int, modifier: Modifier = Modifier) {
+    val _iconId : Int = iconId % 4 + 1;
 
-    val iconResId = when (randomNumber) {
+    val iconResId = when (_iconId) {
         1 -> R.drawable.drink_icon_1
         2 -> R.drawable.drink_icon_2
         3 -> R.drawable.drink_icon_3
