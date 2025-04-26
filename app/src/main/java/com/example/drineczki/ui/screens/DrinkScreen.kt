@@ -17,76 +17,109 @@ import androidx.navigation.NavController
 import com.example.drineczki.data.MyDatabase
 import com.example.drineczki.data.model.Koktajl
 import com.example.drineczki.data.model.Skladnik
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
+
 
 @Composable
 fun DrinkScreen(navController: NavController?, id: Int, database: MyDatabase) {
-
     val viewModel = remember { DrinkViewModel(database) }
 
     val koktajl by viewModel.koktajl.collectAsState()
     val skladniki by viewModel.skladniki.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.load(id)
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFa66730))
             .padding(16.dp)
     ) {
-        if(navController != null)
-        {
-            Button(
-                onClick = { navController.navigate("DrinkListScreen") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Powrót do listy")
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-
-        TimerScreen(key = id)
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        if (koktajl == null) {
-            Text("", color = Color.Red, fontSize = 20.sp)
-        } else {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                elevation = CardDefaults.cardElevation(4.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFfab170),
-                    contentColor = Color.Black
-                )
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(koktajl!!.nazwa ?: "Brak nazwy", style = MaterialTheme.typography.headlineLarge)
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(koktajl!!.przepis ?: "Brak przepisu", style = MaterialTheme.typography.bodyMedium)
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            if (navController != null) {
+                Button(
+                    onClick = { navController.navigate("DrinkListScreen") },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Powrót do listy")
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (skladniki.isEmpty()) {
-                Text(text = "Brak składników", fontSize = 18.sp, color = Color.Gray)
+            TimerScreen(key = id)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (koktajl == null) {
+                Text("", color = Color.Red, fontSize = 20.sp)
             } else {
-                LazyColumn {
-                    items(skladniki) { skladnik ->
-                        SkladnikItem(skladnik)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFfab170),
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(koktajl!!.nazwa ?: "Brak nazwy", style = MaterialTheme.typography.headlineLarge)
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(koktajl!!.przepis ?: "Brak przepisu", style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                if (skladniki.isEmpty()) {
+                    Text(text = "Brak składników", fontSize = 18.sp, color = Color.Gray)
+                } else {
+                    LazyColumn {
+                        items(skladniki) { skladnik ->
+                            SkladnikItem(skladnik)
+                        }
                     }
                 }
             }
         }
+
+        // 🌟 FAB do wysyłania SMS
+        FloatingActionButton(
+            onClick = {
+                val message = buildString {
+                    append("Składniki drinka: ${koktajl?.nazwa ?: "Nieznany"}\n")
+                    skladniki.forEach {
+                        append("- ${it.nazwaSkladnika ?: "Nieznany składnik"}\n")
+                    }
+                }
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("sms:")
+                    putExtra("sms_body", message)
+                }
+                context.startActivity(intent)
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Color(0xFFfab170),
+            contentColor = Color.Black
+        ) {
+            Icon(Icons.Default.Send, contentDescription = "Wyślij SMS")
+        }
     }
 }
+
 
 @Composable
 fun SkladnikItem(skladnik: Skladnik) {
