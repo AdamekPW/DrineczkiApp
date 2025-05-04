@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import com.example.drineczki.data.MyDatabase
 import com.example.drineczki.data.model.Koktajl
 import com.example.drineczki.ui.components.RandomDrinkIcon
@@ -28,7 +34,8 @@ import kotlinx.coroutines.launch
 fun DrinkListScreen(
     navController: NavController? = null,
     database: MyDatabase,
-    onDrinkSelected: ((Int) -> Unit)? = null
+    onDrinkSelected: ((Int) -> Unit)? = null,
+    onMenuClick: (() -> Unit)? = null // Dodano parametr do obsługi otwierania szuflady
 ) {
     val viewModel = remember { DrinkListViewModel(database) }
     val easyDrinks by viewModel.easyDrinks.collectAsState()
@@ -58,6 +65,11 @@ fun DrinkListScreen(
         // Pasek aplikacji
         TopAppBar(
             title = { Text("DrineczkiApp", color = Color.White) },
+            navigationIcon = {
+                IconButton(onClick = { onMenuClick?.invoke() }) { // Ikona hamburgera otwierająca szufladę
+                    Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
+                }
+            },
             actions = {
                 IconButton(onClick = { isSearchVisible = !isSearchVisible }) {
                     Icon(Icons.Default.Search, contentDescription = "Szukaj", tint = Color.White)
@@ -65,9 +77,9 @@ fun DrinkListScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFa66730)), // Kolor tła paska aplikacji
+                .background(Color(0xFFa66730)),
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFFa66730) // Kolor tła
+                containerColor = Color(0xFFa66730)
             )
         )
 
@@ -80,11 +92,6 @@ fun DrinkListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-//                colors = TextFieldDefaults.colors(
-//                    containerColor = Color.White,
-//                    textColor = Color.Black,
-//                    placeholderColor = Color.Gray
-//                )
             )
         }
 
@@ -175,6 +182,84 @@ fun KoktajlItem(
                 style = MaterialTheme.typography.headlineMedium
             )
             RandomDrinkIcon(koktajl.id?:0)
+        }
+    }
+}
+
+@Composable
+fun AppNavigation(database: MyDatabase) {
+    val navController = rememberNavController()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                modifier = Modifier.background(Color(0xFFa66730))
+            ) {
+                Text(
+                    text = "Menu",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Divider(color = Color.White, thickness = 1.dp)
+
+                // Przycisk do DrinkListScreen
+                NavigationDrawerItem(
+                    label = { Text("Lista drinków", color = Color.White) },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch { drawerState.close() }
+                        navController.navigate("DrinkListScreen")
+                    },
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                // Przycisk do InfoScreen
+                NavigationDrawerItem(
+                    label = { Text("Info", color = Color.White) },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch { drawerState.close() }
+                        navController.navigate("Info")
+                    },
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                // Martwe przyciski
+                NavigationDrawerItem(
+                    label = { Text("Opcja 1", color = Color.White) },
+                    selected = false,
+                    onClick = { /* Martwy przycisk */ },
+                    modifier = Modifier.padding(8.dp)
+                )
+                NavigationDrawerItem(
+                    label = { Text("Opcja 2", color = Color.White) },
+                    selected = false,
+                    onClick = { /* Martwy przycisk */ },
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+        }
+    ) {
+        NavHost(navController = navController, startDestination = "DrinkListScreen") {
+            composable("DrinkListScreen") {
+                DrinkListScreen(
+                    navController = navController,
+                    database = database,
+                    onMenuClick = { coroutineScope.launch { drawerState.open() } } // Otwieranie szuflady
+                )
+            }
+            composable("Info") { InfoScreen(navController) }
+            composable(
+                "Drink/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("id") ?: 0
+                DrinkScreen(navController, id, database)
+            }
         }
     }
 }

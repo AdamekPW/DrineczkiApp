@@ -60,6 +60,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics:1.5.0") // Funkcje graficzne
     implementation("androidx.compose.ui:ui-tooling:1.5.0") // Narzędzia Compose
     implementation("androidx.compose.animation:animation:1.5.0") // Animacje (opcjonalne)
+    implementation("androidx.compose.foundation:foundation:1.5.0")
     implementation(libs.androidx.material3)
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("com.google.accompanist:accompanist-pager:0.32.0")
