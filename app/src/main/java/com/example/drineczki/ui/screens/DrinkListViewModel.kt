@@ -27,7 +27,7 @@ class DrinkListViewModel(
 
             for (koktajl in allKoktajle) {
                 val skladniki = database.skladnikDao().getSkladnikiByKoktajlId(koktajl.id!!)
-                if (skladniki.size < 4) {
+                if (skladniki.size < 6) {
                     easy.add(koktajl)
                 } else {
                     hard.add(koktajl)

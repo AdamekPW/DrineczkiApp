@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    implementation("androidx.compose.material3:material3:1.2.0")
     implementation(libs.androidx.media3.common.ktx)
     val roomVersion = "2.6.1"
     implementation(libs.androidx.core.ktx)
@@ -61,6 +62,8 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.5.0") // Animacje (opcjonalne)
     implementation(libs.androidx.material3)
     implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("com.google.accompanist:accompanist-pager:0.32.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
