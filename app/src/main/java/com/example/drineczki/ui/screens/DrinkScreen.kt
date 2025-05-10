@@ -30,24 +30,25 @@ import com.example.drineczki.data.model.Skladnik
 import com.example.drineczki.ui.components.TimerScreen
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.graphics.graphicsLayer
+import com.example.drineczki.data.model.SharedStuffViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrinkScreen(navController: NavController?, id: Int, database: MyDatabase) {
+fun DrinkScreen(navController: NavController?, sharedStuffViewModel: SharedStuffViewModel, database: MyDatabase) {
     val viewModel = remember { DrinkViewModel(database) }
     val koktajl by viewModel.koktajl.collectAsState()
     val skladniki by viewModel.skladniki.collectAsState()
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    val iconResId = when (id % 2 + 1) {
+    val iconResId = when ((sharedStuffViewModel.id_drinka?:0) % 2 + 1) {
         1 -> R.drawable.drink_1
         2 -> R.drawable.drink_2
         else -> R.drawable.drink_1
     }
 
     LaunchedEffect(Unit) {
-        viewModel.load(id)
+        viewModel.load(sharedStuffViewModel.id_drinka?:0)
     }
 
     Scaffold(
@@ -139,7 +140,7 @@ fun DrinkScreen(navController: NavController?, id: Int, database: MyDatabase) {
                         )
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            TimerScreen(key = id)
+                            TimerScreen(key = (sharedStuffViewModel.id_drinka?:0))
                             Text(
                                 koktajl!!.nazwa ?: "Brak nazwy",
                                 style = MaterialTheme.typography.headlineLarge

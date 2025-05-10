@@ -27,6 +27,7 @@ import com.example.drineczki.data.model.Koktajl
 import com.example.drineczki.ui.components.RandomDrinkIcon
 import com.google.accompanist.pager.*
 import androidx.compose.runtime.rememberCoroutineScope
+import com.example.drineczki.data.model.SharedStuffViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
@@ -34,6 +35,7 @@ import kotlinx.coroutines.launch
 fun DrinkListScreen(
     navController: NavController? = null,
     database: MyDatabase,
+    sharedStuffViewModel: SharedStuffViewModel,
     onDrinkSelected: ((Int) -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null // Dodano parametr do obsługi otwierania szuflady
 ) {
@@ -133,7 +135,7 @@ fun DrinkListScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(filteredDrinks) { koktajl ->
-                    KoktajlItem(navController, koktajl = koktajl, onDrinkSelected)
+                    KoktajlItem(navController, sharedStuffViewModel, koktajl = koktajl, onDrinkSelected)
                 }
             }
         }
@@ -143,6 +145,7 @@ fun DrinkListScreen(
 @Composable
 fun KoktajlItem(
     navController: NavController?,
+    sharedStuffViewModel: SharedStuffViewModel,
     koktajl: Koktajl,
     onDrinkSelected: ((Int) -> Unit)? = null
 ) {
@@ -160,6 +163,7 @@ fun KoktajlItem(
         elevation = CardDefaults.cardElevation(4.dp),
         onClick = {
             val id = koktajl.id
+            sharedStuffViewModel.id_drinka = id
             onDrinkSelected?.invoke(id!!)
             if (navController != null) {
                 navController.navigate("Drink/$id")
@@ -187,11 +191,12 @@ fun KoktajlItem(
 }
 
 @Composable
-fun AppNavigation(database: MyDatabase) {
+fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewModel) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
+    
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -249,6 +254,7 @@ fun AppNavigation(database: MyDatabase) {
                 DrinkListScreen(
                     navController = navController,
                     database = database,
+                    sharedStuffViewModel,
                     onMenuClick = { coroutineScope.launch { drawerState.open() } } // Otwieranie szuflady
                 )
             }
@@ -257,8 +263,7 @@ fun AppNavigation(database: MyDatabase) {
                 "Drink/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
-                val id = backStackEntry.arguments?.getInt("id") ?: 0
-                DrinkScreen(navController, id, database)
+                DrinkScreen(navController, sharedStuffViewModel, database)
             }
         }
     }

@@ -45,23 +45,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.background
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.drineczki.data.model.SharedStuffViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val database = (application as MyApplication).database
+
 
         enableEdgeToEdge()
         setContent {
+            val sharedStuffViewModel: SharedStuffViewModel = viewModel()
             val windowSizeClass = calculateWindowSizeClass(this)
             DrineczkiTheme {
                 if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded) {
-                    TabletLayout(database)
+                    TabletLayout(database, sharedStuffViewModel)
                 } else {
-                    AppNavigation(database)
+                    AppNavigation(database, sharedStuffViewModel)
                 }
             }
         }
@@ -69,7 +72,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation(database: MyDatabase) {
+fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewModel ) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -130,7 +133,8 @@ fun AppNavigation(database: MyDatabase) {
             composable("DrinkListScreen") { 
                 DrinkListScreen(
                     navController = navController,
-                    database = database
+                    database = database,
+                    sharedStuffViewModel
                 )
             }
             composable("Info") { InfoScreen(navController) }
@@ -138,23 +142,23 @@ fun AppNavigation(database: MyDatabase) {
                 "Drink/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
-                val id = backStackEntry.arguments?.getInt("id") ?: 0
-                DrinkScreen(navController, id, database)
+                DrinkScreen(navController, sharedStuffViewModel, database)
             }
         }
     }
 }
 
 @Composable
-fun TabletLayout(database: MyDatabase) {
-    var selectedDrinkId by remember { mutableStateOf<Int?>(null) }
+fun TabletLayout(database: MyDatabase, sharedStuffViewModel: SharedStuffViewModel ) {
+    //var selectedDrinkId by remember { mutableStateOf<Int?>(null) }
 
     Row(modifier = Modifier.fillMaxSize()) {
         DrinkListScreen(
             navController = null,
             database = database,
+            sharedStuffViewModel,
             onDrinkSelected = { id ->
-                selectedDrinkId = id
+                sharedStuffViewModel.id_drinka = id
             }
         )
 
@@ -164,10 +168,10 @@ fun TabletLayout(database: MyDatabase) {
                 .fillMaxHeight()
                 .background(Color(0xFFFDE8D7))
         ) {
-            selectedDrinkId?.let { id ->
+            sharedStuffViewModel.id_drinka?.let { id ->
                 key(id)
                 {
-                    DrinkScreen(navController = null, id = id, database = database)
+                    DrinkScreen(navController = null, sharedStuffViewModel, database = database)
                 }
 
             } ?: Text(
