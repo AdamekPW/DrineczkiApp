@@ -150,35 +150,94 @@ fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMod
 
 @Composable
 fun TabletLayout(database: MyDatabase, sharedStuffViewModel: SharedStuffViewModel ) {
-    //var selectedDrinkId by remember { mutableStateOf<Int?>(null) }
+    val navController = rememberNavController()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                modifier = Modifier.background(Color(0xFFa66730))
+            ) {
+                Text(
+                    text = "Menu",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Divider(color = Color.Black, thickness = 1.dp)
 
-    Row(modifier = Modifier.fillMaxSize()) {
-        DrinkListScreen(
-            navController = null,
-            database = database,
-            sharedStuffViewModel,
-            onDrinkSelected = { id ->
-                sharedStuffViewModel.id_drinka = id
+                NavigationDrawerItem(
+                    label = { Text("Lista drinków", color = Color.Black) },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch { drawerState.close() }
+                        navController.navigate("DrinkListScreen")
+                    },
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                // Przycisk do InfoScreen
+                NavigationDrawerItem(
+                    label = { Text("Info", color = Color.Black) },
+                    selected = false,
+                    onClick = {
+                        coroutineScope.launch { drawerState.close() }
+                        navController.navigate("Info")
+                    },
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                // Martwe przyciski
+                NavigationDrawerItem(
+                    label = { Text("Opcja 1", color = Color.Black) },
+                    selected = false,
+                    onClick = { /* Martwy przycisk */ },
+                    modifier = Modifier.padding(8.dp)
+                )
+                NavigationDrawerItem(
+                    label = { Text("Opcja 2", color = Color.Black) },
+                    selected = false,
+                    onClick = { /* Martwy przycisk */ },
+                    modifier = Modifier.padding(8.dp)
+                )
             }
-        )
-
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .background(Color(0xFFFDE8D7))
-        ) {
-            sharedStuffViewModel.id_drinka?.let { id ->
-                key(id)
-                {
-                    DrinkScreen(navController = null, sharedStuffViewModel, database = database)
-                }
-
-            } ?: Text(
-                "Wybierz drinka z listy",
-                modifier = Modifier.align(Alignment.Center)
-            )
         }
+    ) {
+        NavHost(navController = navController, startDestination = "DrinkListScreen") {
+            composable("DrinkListScreen") {
+                Row(modifier = Modifier.fillMaxSize()) {
+                    DrinkListScreen(
+                        navController = null,
+                        database = database,
+                        sharedStuffViewModel,
+                        onDrinkSelected = { id ->
+                            sharedStuffViewModel.id_drinka = id
+                        }
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .background(Color(0xFFFDE8D7))
+                    ) {
+                        sharedStuffViewModel.id_drinka?.let { id ->
+                            key(id)
+                            {
+                                DrinkScreen(navController = null, sharedStuffViewModel, database = database)
+                            }
+
+                        } ?: Text(
+                            "Wybierz drinka z listy",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+            }
+            composable("Info") { InfoScreen(navController) }
+        }
+
     }
 }
 
