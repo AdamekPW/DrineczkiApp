@@ -86,14 +86,14 @@ fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMod
                 Text(
                     text = "Menu",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = Color.Black,
                     modifier = Modifier.padding(16.dp)
                 )
-                Divider(color = Color.White, thickness = 1.dp)
+                Divider(color = Color.Black, thickness = 1.dp)
 
                 // Przycisk do DrinkListScreen
                 NavigationDrawerItem(
-                    label = { Text("Lista drinków", color = Color.White) },
+                    label = { Text("Lista drinków", color = Color.Black) },
                     selected = false,
                     onClick = {
                         coroutineScope.launch { drawerState.close() }
@@ -104,7 +104,7 @@ fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMod
 
                 // Przycisk do InfoScreen
                 NavigationDrawerItem(
-                    label = { Text("Info", color = Color.White) },
+                    label = { Text("Info", color = Color.Black) },
                     selected = false,
                     onClick = {
                         coroutineScope.launch { drawerState.close() }
@@ -115,13 +115,13 @@ fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMod
 
                 // Martwe przyciski
                 NavigationDrawerItem(
-                    label = { Text("Opcja 1", color = Color.White) },
+                    label = { Text("Opcja 1", color = Color.Black) },
                     selected = false,
                     onClick = { /* Martwy przycisk */ },
                     modifier = Modifier.padding(8.dp)
                 )
                 NavigationDrawerItem(
-                    label = { Text("Opcja 2", color = Color.White) },
+                    label = { Text("Opcja 2", color = Color.Black) },
                     selected = false,
                     onClick = { /* Martwy przycisk */ },
                     modifier = Modifier.padding(8.dp)

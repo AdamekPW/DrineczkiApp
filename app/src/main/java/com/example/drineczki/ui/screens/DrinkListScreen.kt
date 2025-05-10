@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -37,7 +38,6 @@ fun DrinkListScreen(
     database: MyDatabase,
     sharedStuffViewModel: SharedStuffViewModel,
     onDrinkSelected: ((Int) -> Unit)? = null,
-    onMenuClick: (() -> Unit)? = null // Dodano parametr do obsługi otwierania szuflady
 ) {
     val viewModel = remember { DrinkListViewModel(database) }
     val easyDrinks by viewModel.easyDrinks.collectAsState()
@@ -68,8 +68,8 @@ fun DrinkListScreen(
         TopAppBar(
             title = { Text("DrineczkiApp", color = Color.White) },
             navigationIcon = {
-                IconButton(onClick = { onMenuClick?.invoke() }) { // Ikona hamburgera otwierająca szufladę
-                    Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.Favorite, contentDescription = "Heart", tint = Color.White)
                 }
             },
             actions = {
@@ -186,85 +186,6 @@ fun KoktajlItem(
                 style = MaterialTheme.typography.headlineMedium
             )
             RandomDrinkIcon(koktajl.id?:0)
-        }
-    }
-}
-
-@Composable
-fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewModel) {
-    val navController = rememberNavController()
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val coroutineScope = rememberCoroutineScope()
-
-    
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier.background(Color(0xFFa66730))
-            ) {
-                Text(
-                    text = "Menu",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                    modifier = Modifier.padding(16.dp)
-                )
-                Divider(color = Color.White, thickness = 1.dp)
-
-                // Przycisk do DrinkListScreen
-                NavigationDrawerItem(
-                    label = { Text("Lista drinków", color = Color.White) },
-                    selected = false,
-                    onClick = {
-                        coroutineScope.launch { drawerState.close() }
-                        navController.navigate("DrinkListScreen")
-                    },
-                    modifier = Modifier.padding(8.dp)
-                )
-
-                // Przycisk do InfoScreen
-                NavigationDrawerItem(
-                    label = { Text("Info", color = Color.White) },
-                    selected = false,
-                    onClick = {
-                        coroutineScope.launch { drawerState.close() }
-                        navController.navigate("Info")
-                    },
-                    modifier = Modifier.padding(8.dp)
-                )
-
-                // Martwe przyciski
-                NavigationDrawerItem(
-                    label = { Text("Opcja 1", color = Color.White) },
-                    selected = false,
-                    onClick = { /* Martwy przycisk */ },
-                    modifier = Modifier.padding(8.dp)
-                )
-                NavigationDrawerItem(
-                    label = { Text("Opcja 2", color = Color.White) },
-                    selected = false,
-                    onClick = { /* Martwy przycisk */ },
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        }
-    ) {
-        NavHost(navController = navController, startDestination = "DrinkListScreen") {
-            composable("DrinkListScreen") {
-                DrinkListScreen(
-                    navController = navController,
-                    database = database,
-                    sharedStuffViewModel,
-                    onMenuClick = { coroutineScope.launch { drawerState.open() } } // Otwieranie szuflady
-                )
-            }
-            composable("Info") { InfoScreen(navController) }
-            composable(
-                "Drink/{id}",
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
-            ) { backStackEntry ->
-                DrinkScreen(navController, sharedStuffViewModel, database)
-            }
         }
     }
 }

@@ -43,7 +43,7 @@ fun InfoScreen(navController: NavController?) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "To jest aplikacja DrineczkiApp.\nZnajdź swoje ulubione drinki!",
+                text = "To jest aplikacja DrineczkiApp.\nZnajdź swoje ulubione drinki!\n\nAutorzy:\nAdam Szułczyński 155938\nPiotr Nowacki 155906",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White,
                 modifier = Modifier.padding(16.dp)
