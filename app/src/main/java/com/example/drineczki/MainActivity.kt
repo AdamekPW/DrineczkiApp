@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,9 +48,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.drineczki.data.model.SharedStuffViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -58,9 +68,11 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
+
             val sharedStuffViewModel: SharedStuffViewModel = viewModel()
             val windowSizeClass = calculateWindowSizeClass(this)
             DrineczkiTheme {
+                //FloatingCirclesDemo()
                 if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded) {
                     TabletLayout(database, sharedStuffViewModel)
                 } else {
@@ -240,4 +252,64 @@ fun TabletLayout(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMode
 
     }
 }
+
+@Composable
+fun FloatingCirclesDemo() {
+    val circles = remember { List(5) { Animatable(0f) } }
+
+    LaunchedEffect(Unit) {
+        circles.forEachIndexed { index, animatable ->
+            launch {
+                delay(index * 300L)
+                while (true) {
+                    animatable.snapTo(0f)
+                    animatable.animateTo(
+                        targetValue = -300f,
+                        animationSpec = tween(durationMillis = 3000, easing = LinearEasing)
+                    )
+                    delay(500L)
+                }
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        // 🖼️ Obrazek w tle
+        Image(
+            painter = painterResource(id = R.drawable.drink_icon_1),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.scale(0.6f, 0.6f)
+                .align(Alignment.Center)
+        )
+
+        // 🔵 Animowane kółka – na wierzchu, na dole ekranu
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            circles.forEachIndexed { index, animatable ->
+                Box(
+                    modifier = Modifier
+                        .offset(y = animatable.value.dp)
+                        .size((20 + index * 2).dp)
+                        .graphicsLayer {
+                            alpha = (animatable.value / -300f)
+                        }
+                        .background(
+                            color = Color.Cyan.copy(alpha = 0.6f),
+                            shape = CircleShape
+                        )
+                )
+            }
+        }
+    }
+}
+
+
 
