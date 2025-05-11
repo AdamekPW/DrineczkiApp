@@ -140,7 +140,7 @@ fun DrinkScreen(navController: NavController?, sharedStuffViewModel: SharedStuff
                         )
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            TimerScreen(key = (sharedStuffViewModel.id_drinka?:0))
+                            TimerScreen(sharedStuffViewModel)
                             Text(
                                 koktajl!!.nazwa ?: "Brak nazwy",
                                 style = MaterialTheme.typography.headlineLarge

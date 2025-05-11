@@ -7,4 +7,5 @@ import androidx.lifecycle.ViewModel
 
 class SharedStuffViewModel : ViewModel() {
     var id_drinka by mutableStateOf<Int?>(null)
+    var time_left by mutableStateOf<Int>(60)
 }

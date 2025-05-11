@@ -35,4 +35,8 @@ class TimerViewModel : ViewModel() {
         stopTimer()
         _timeLeft.value = defaultTime
     }
+
+    fun setTimer(time: Int) {
+        _timeLeft.value = time
+    }
 }

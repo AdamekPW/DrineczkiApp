@@ -6,19 +6,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.drineczki.data.model.SharedStuffViewModel
 
 @Composable
-fun TimerScreen(key: Int) {
+fun TimerScreen(sharedStuffViewModel: SharedStuffViewModel) {
     val viewModel: TimerViewModel = viewModel(
-        key = key.toString(),
+        key = (sharedStuffViewModel.id_drinka?:0).toString(),
         modelClass = TimerViewModel::class.java
     )
 
     val timeLeft by viewModel.timeLeft.collectAsState()
+    sharedStuffViewModel.time_left = timeLeft
 
-
-    LaunchedEffect(key) {
-        viewModel.resetTimer()
+    LaunchedEffect(sharedStuffViewModel.id_drinka) {
+        viewModel.setTimer(sharedStuffViewModel.time_left)
     }
 
     Column(
