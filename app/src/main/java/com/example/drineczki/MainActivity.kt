@@ -93,19 +93,19 @@ fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMod
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.background(Color(0xFFa66730))
+                modifier = Modifier.background(MaterialTheme.colorScheme.onBackground)//Modifier.background(Color(0xFFa66730))
             ) {
                 Text(
                     text = "Menu",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.primary, // Color.Black,
                     modifier = Modifier.padding(16.dp)
                 )
-                Divider(color = Color.Black, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.primary,)
 
                 // Przycisk do DrinkListScreen
                 NavigationDrawerItem(
-                    label = { Text("Lista drinków", color = Color.Black) },
+                    label = { Text("Lista drinków", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = {
                         coroutineScope.launch { drawerState.close() }
@@ -116,7 +116,7 @@ fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMod
 
                 // Przycisk do InfoScreen
                 NavigationDrawerItem(
-                    label = { Text("Info", color = Color.Black) },
+                    label = { Text("Info", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = {
                         coroutineScope.launch { drawerState.close() }
@@ -127,13 +127,13 @@ fun AppNavigation(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMod
 
                 // Martwe przyciski
                 NavigationDrawerItem(
-                    label = { Text("Opcja 1", color = Color.Black) },
+                    label = { Text("Opcja 1", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = { /* Martwy przycisk */ },
                     modifier = Modifier.padding(8.dp)
                 )
                 NavigationDrawerItem(
-                    label = { Text("Opcja 2", color = Color.Black) },
+                    label = { Text("Opcja 2", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = { /* Martwy przycisk */ },
                     modifier = Modifier.padding(8.dp)
@@ -169,18 +169,18 @@ fun TabletLayout(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMode
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.background(Color(0xFFa66730))
+                modifier = Modifier.background(MaterialTheme.colorScheme.background)
             ) {
                 Text(
                     text = "Menu",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(16.dp)
                 )
-                Divider(color = Color.Black, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.primary,)
 
                 NavigationDrawerItem(
-                    label = { Text("Lista drinków", color = Color.Black) },
+                    label = { Text("Lista drinków", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = {
                         coroutineScope.launch { drawerState.close() }
@@ -191,7 +191,7 @@ fun TabletLayout(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMode
 
                 // Przycisk do InfoScreen
                 NavigationDrawerItem(
-                    label = { Text("Info", color = Color.Black) },
+                    label = { Text("Info", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = {
                         coroutineScope.launch { drawerState.close() }
@@ -202,13 +202,13 @@ fun TabletLayout(database: MyDatabase, sharedStuffViewModel: SharedStuffViewMode
 
                 // Martwe przyciski
                 NavigationDrawerItem(
-                    label = { Text("Opcja 1", color = Color.Black) },
+                    label = { Text("Opcja 1", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = { /* Martwy przycisk */ },
                     modifier = Modifier.padding(8.dp)
                 )
                 NavigationDrawerItem(
-                    label = { Text("Opcja 2", color = Color.Black) },
+                    label = { Text("Opcja 2", color = MaterialTheme.colorScheme.primary) },
                     selected = false,
                     onClick = { /* Martwy przycisk */ },
                     modifier = Modifier.padding(8.dp)
