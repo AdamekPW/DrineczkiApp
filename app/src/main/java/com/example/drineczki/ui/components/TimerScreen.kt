@@ -1,9 +1,15 @@
 package com.example.drineczki.ui.components
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.drineczki.data.model.SharedStuffViewModel
@@ -37,15 +43,15 @@ fun TimerScreen(sharedStuffViewModel: SharedStuffViewModel) {
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             Button(onClick = { viewModel.startTimer() }) {
-                Text("Start")
+                Icon(Icons.Default.PlayArrow, contentDescription = "Heart", tint = Color.White)
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = { viewModel.stopTimer() }) {
-                Text("Stop")
+                Icon(Icons.Default.Clear, contentDescription = "Heart", tint = Color.White)
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = { viewModel.resetTimer() }) {
-                Text("Przerwij")
+                Icon(Icons.Default.Refresh, contentDescription = "Heart", tint = Color.Red)
             }
         }
     }
